@@ -11,9 +11,9 @@
 */
 
 //GLOBAL VARIABLES:
-int numRows = 32;
-int numCols = 32;
-int height = 640;
+int numRows = 100;
+int numCols = 100;
+int height = 1300;
 int width = height;
 int ig = 0;
 int jg = 0;
@@ -43,14 +43,14 @@ void setup(){
       initialMatrix[i][j] = matrixValue;
     }
   }
-  size(640, 640);
+  size(1300, 1300);
   printMatrix(); 
   delay(1000);
 }
 void draw(){
   initialMatrix = assessMatrix();
   printMatrix();
-  delay(100);
+  delay(20);
 }
 int[][] assessMatrix(){
   /*this function reads the current array,
@@ -147,6 +147,7 @@ int assessNeighbors(){
 }
 void printMatrix(){
   //this function takes the current version of initialArray and displays it.
+  noStroke();
   for(int i = 0; i < numRows; i++){
     for(int j = 0; j < numCols; j++){
       int xPos = j * (width/numCols);
@@ -154,9 +155,9 @@ void printMatrix(){
       int rectWidth = (width/numCols);
       int rectHeight = (height/numRows);
       if(initialMatrix[i][j] == 0){
-        fill(235);//dead and white
+        fill(245);//dead and white
       }else{
-        fill(20);//alive and black
+        fill(200, 0, 0);//alive and black
       }
       rect(xPos, yPos, rectWidth, rectHeight); 
     }
