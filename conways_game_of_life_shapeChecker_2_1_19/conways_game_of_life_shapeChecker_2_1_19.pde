@@ -6,6 +6,8 @@ int width = height;
 int ig = 0;
 int jg = 0;
 
+boolean previousStaticBlock = false;
+
 int[][] initialMatrix = new int[numCols][numRows];
 
 void setup(){
@@ -22,7 +24,9 @@ void setup(){
 
 void draw(){
   initialMatrix = assessMatrix();
+  colorMatrix();
   printMatrix();
+  colorMatrix();
   delay(20);
 }
 
@@ -122,12 +126,59 @@ int assessNeighbors(){
   return neighbors;
 }
 
+void colorMatrix(){
+    for(int i = 0; i < numRows; i++){
+      for(int j = 0; j < numCols; j++){
+        int matrixValue = (int)random(0,1.5);
+        initialMatrix[i][j] = matrixValue;
+        if(identifyNeighbors_static_block() && previousStaticBlock){
+          colorNeighbors_static_block();
+        }
+        previousStaticBlock = identifyNeighbors_static_block();
+      }
+    }
+  
+}
+
+void colorNeighbors_static_block(){
+      //origin
+    int xPos = jg * (width/numCols);
+    int yPos = ig * (height/numRows);
+    int rectWidth = (width/numCols);
+    int rectHeight = (height/numRows);
+    fill(0, 0, 200);
+    rect(xPos, yPos, rectWidth, rectHeight);
+      //right center
+    xPos = (jg+1) * (width/numCols);
+    yPos = ig * (height/numRows);
+    rectWidth = (width/numCols);
+    rectHeight = (height/numRows);
+    fill(0, 0, 200);
+    rect(xPos, yPos, rectWidth, rectHeight);
+      //right top
+    xPos = (jg+1) * (width/numCols);
+    yPos = (ig-1) * (height/numRows);
+    rectWidth = (width/numCols);
+    rectHeight = (height/numRows);
+    fill(0, 0, 200);
+    rect(xPos, yPos, rectWidth, rectHeight);
+      //top center
+    xPos = jg * (width/numCols);
+    yPos = (ig-1) * (height/numRows);
+    rectWidth = (width/numCols);
+    rectHeight = (height/numRows);
+    fill(0, 0, 200);
+    rect(xPos, yPos, rectWidth, rectHeight);
+
+
+}
+
+
 boolean identifyNeighbors_static_block(){
   /*  This function a sixteen square area to determine if there is an isolated block shape.
    *  First, it looks to see if the top center, top right, and right blocks are live.
    *  Then, if every other block is dead, it will identify the square and color it.
    */
-  boolean isBlock = true;
   if(ig != 0 && jg != 0){//top left 
     if(initialMatrix[ig-1][jg-1] == 1){
       return false;
@@ -171,23 +222,23 @@ boolean identifyNeighbors_static_block(){
   
   //now I need to check the rest of the periphery, AKA two blocks away on the top and right
   
-  if(ig != numRows-1 && jg != numCols-2){//bottom right right
+  if(ig != numRows-1 && !(jg <= numCols-2)){//bottom right right
     if(initialMatrix[ig + 1][ jg + 2] == 1){
       return false;
     }
   }
-  if(jg != numCols-2){//center right right
+  if(!(jg <= numCols-2)){//center right right
     if(initialMatrix[ig][jg+2] == 1){
       return false;
     }
   }
   
-  if(ig != 0 && jg != numCols-2){//top right right
+  if(ig != 0 && !(jg <= numCols-2)){//top right right
     if(initialMatrix[ig-1][jg+2] == 1){
       return false;
     }
   }
-  if(ig-1 != 0 && jg != numCols-2){//top top right right
+  if(ig-1 != 0 && !(jg <= numCols-2)){//top top right right
     if(initialMatrix[ig-2][jg+2] == 1){
       return false;
     }
@@ -206,7 +257,6 @@ boolean identifyNeighbors_static_block(){
     if(initialMatrix[ig-2][jg-1] == 1){
       return false;
     }
-  }
   if(initialMatrix[ig][jg] == 0){
     return false;
   }
@@ -229,7 +279,7 @@ void printMatrix(){
       if(initialMatrix[i][j] == 0){
         fill(245);//dead and white
       }else{
-        fill(200, 0, 0);//alive and black
+        fill(200, 0, 0);//alive and red
       }
       rect(xPos, yPos, rectWidth, rectHeight); 
     }
