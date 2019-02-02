@@ -50,7 +50,7 @@ void setup(){
 void draw(){
   initialMatrix = assessMatrix();
   printMatrix();
-  delay(20);
+  delay(60);
 }
 int[][] assessMatrix(){
   /*this function reads the current array,
