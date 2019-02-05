@@ -12,12 +12,13 @@
 
 //  GLOBAL VARIABLES:
 boolean paused = true;
-final int DELAY = 55;//MINIMUM OF 10 MILLISECONDS, GIVE PROGRAM TIME TO RUN ON BIG MATRICES
+boolean previousAssess = false;
+final int DELAY = 20;//MINIMUM OF 10 MILLISECONDS, GIVE PROGRAM TIME TO RUN ON BIG MATRICES
 final int clickResponseDelay = 100;
-final int numRows = 100;
-final int numCols = 100;
-final int HEIGHT = 500;
-final int WIDTH = 500;
+final int numRows = 300;
+final int numCols = 300;
+final int HEIGHT = 1200;
+final int WIDTH = 1200;
 int[][] initialMatrix = new int[numCols][numRows];
 //GLOBALS FOR LOOP PROCESSION:
 int ig = 0;
@@ -25,17 +26,12 @@ int jg = 0;
 //
 
 void setup(){
-  size(500,500);
+  size(1200, 1200);
   noStroke();
   //CREATES BEGINNING ARRAY AND GETS THE PROGRAM STARTED
   
   //RANDOM BEGINNING MATRIX
-  for(int i = 0; i < numRows; i++){
-    for(int j = 0; j < numCols; j++){
-      int matrixValue = (int)random(0,1.5);
-      initialMatrix[i][j] = matrixValue;
-    }
-  }
+  createRandomMatrix();
   
   //OR CLEAR MATRIX
   //for(int i = 0; i < numRows; i++){
@@ -45,6 +41,23 @@ void setup(){
   //}
   printMatrix(); 
   delay(1000);
+}
+
+void createRandomMatrix(){
+  for(int i = 0; i < numRows; i++){
+    for(int j = 0; j < numCols; j++){
+      int matrixValue = (int)random(0,1.5);
+      initialMatrix[i][j] = matrixValue;
+    }
+  }
+}
+
+void createClearMatrix(){
+  for(int i = 0; i < numRows; i++){
+    for(int j = 0; j < numCols; j++){
+      initialMatrix[i][j] = 0;//-DEAD
+    }
+  }
 }
 void draw(){
   if(paused == false){
@@ -57,8 +70,6 @@ void draw(){
   }
   printMatrix();
   fill(255,0,0);
-  
-
 }
 int[][] assessMatrix(){
  /*  THIS FUNCTION READS THE CURRENT ARRAY
@@ -149,7 +160,7 @@ int assessNeighbors(){
     }
   }
   if(ig != numRows-1 && jg != numCols-1){//bottom right
-    if(initialMatrix[ig + 1][ jg + 1] == 1){
+    if(initialMatrix[ig + 1][jg + 1] == 1){
       neighbors++;
     }
   }
@@ -171,7 +182,7 @@ void printMatrix(){
       rect(xPos, yPos, rectWidth, rectHeight); 
     }
   }
-  //findOrganisms();
+  findOrganisms();
 }
 
 
@@ -183,6 +194,9 @@ void keyReleased(){
     }else if(paused == false){
       paused = true;
     }
+  }
+  if(paused == true && key == 'r'){
+    createRandomMatrix();
   }
   delay(DELAY);
 }
@@ -215,9 +229,17 @@ void findOrganisms(){
   */
   for(int i = 0; i< numRows; i++){
     for(int j = 0; j < numCols; j++){
-      if(checkForSquare()){
-      }      
-      
+      //if(checkForSquare(i, j)){
+        //colorSquare
+      //}      
+      if(checkForStatic(i, j)){
+        int xPos = j * (width/numCols);
+        int yPos = i * (height/numRows);
+        int rectWidth = (width/numCols);
+        int rectHeight = (height/numRows);
+        fill(230, 0, 0);
+        rect(xPos, yPos, rectWidth, rectHeight); 
+      }
       
       
     }
@@ -226,10 +248,28 @@ void findOrganisms(){
   
 }
 
-boolean checkForSquare(){
-  boolean isSquare = true;
+boolean checkForStatic(int i, int j){
+  ig = i;
+  jg = j;
+  if(assessNeighbors() == 3 || assessNeighbors() == 4 || assessNeighbors() == 2){
+    if(previousAssess == true){
+      return true;
+    }
+    previousAssess = true;
+  }else{
+    previousAssess = false;
+  }
+  return false;
+}
+boolean checkForSquare(int i, int j){  // i rows, j cols
+  //check to see if any blocks will be out of bounds:
+  if(i == 0 || j == numCols - 1){ // square impossible at these spots
+    return false;
+  }
+  //16 squares to address:
   
-//RIGHTHERE//RIGHTHERE//RIGHTHERE//RIGHTHERE//RIGHTHERE//RIGHTHERE//RIGHTHERE//RIGHTHERE//RIGHTHERE//RIGHTHERE
   
-  return isSquare;
+
+  
+  return true;
 }
