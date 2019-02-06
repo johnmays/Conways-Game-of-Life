@@ -261,13 +261,27 @@ boolean checkForStatic(int i, int j){
   }
   return false;
 }
+
+
+
 boolean checkForSquare(int i, int j){  // i rows, j cols
   //check to see if any blocks will be out of bounds:
   if(i == 0 || j == numCols - 1){ // square impossible at these spots
     return false;
   }
   //16 squares to address:
-  
+  if(initialMatrix[i][j] != 1){
+    return false;
+  }
+  if(initialMatrix[i+1][j] != 1){
+    return false;
+  }
+  if(initialMatrix[i+1][j+1] != 1){
+    return false;
+  }
+  if(initialMatrix[i][j+1] != 1){
+    return false;
+  }
   
 
   
